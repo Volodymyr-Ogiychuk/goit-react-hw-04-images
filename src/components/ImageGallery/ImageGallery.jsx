@@ -42,7 +42,7 @@ export const ImageGallery = ({ dataInput }) => {
       setIsLoading(true);
       searchApi(dataInput, page)
         .then(data => setImages(images => [...images, ...data.hits]))
-        .catch(error => setError(error.message))
+        .catch(error => setError({ error: error.message }))
         .finally(() => setIsLoading(false));
   
   }, [page]);
