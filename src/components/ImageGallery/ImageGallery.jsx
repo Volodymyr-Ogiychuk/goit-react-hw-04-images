@@ -39,17 +39,18 @@ export const ImageGallery = ({ dataInput }) => {
   }, [dataInput])
 
   useEffect(() => {
+    if (page === 1) return;
       setIsLoading(true);
       searchApi(dataInput, page)
         .then(data => setImages(images => [...images, ...data.hits]))
         .catch(error => setError({ error: error.message }))
         .finally(() => setIsLoading(false));
-  // eslint-disable-next-line
-  }, [page]);
+
+  }, [page, dataInput]);
 
   const addImg = data => {
     setImages(data.hits);
-    setTotalPages(totalPages => Math.ceil(data.totalHits / 12));
+    setTotalPages(Math.ceil(data.totalHits / 12));
     setError(null);
   };
   
