@@ -44,7 +44,7 @@ export const ImageGallery = ({ dataInput }) => {
         .then(data => setImages(images => [...images, ...data.hits]))
         .catch(error => setError({ error: error.message }))
         .finally(() => setIsLoading(false));
-  
+  // eslint-disable-next-line
   }, [page]);
 
   const addImg = data => {
