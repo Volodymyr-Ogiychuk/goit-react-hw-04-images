@@ -9,7 +9,6 @@ const ImageGalleryItem = ({ images, onOpenModal, sendAltUrl }) => (
             key={id}
             onClick={evt => {
               sendAltUrl({tags, largeImageURL});
-              // sendUrl(largeImageURL)
               onOpenModal(evt);
         }}
       >

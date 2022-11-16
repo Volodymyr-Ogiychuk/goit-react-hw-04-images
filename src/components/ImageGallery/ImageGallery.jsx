@@ -33,20 +33,14 @@ export const ImageGallery = ({ dataInput, images, setImages, page, setPage }) =>
         return r;
       })
       .then(data => {
-        console.log('page', page);
-        console.log('dataInput', dataInput);
-        console.log('data.hits', data.hits);
-        console.log('images', images);
         setImages(state => ((page === 1) ? data.hits : [...state, ...data.hits]));
-        console.log('images after SET', images);
         setTotalPages(Math.ceil(data.totalHits / 12));
         setError(null);
-        console.log('images after after', images);
-        
       })        
         .catch(err => setError(err.message))
         .finally(() => setIsLoading(false));
     return;
+    // eslint-disable-next-line
   }, [dataInput, page])
   
   const getAltUrl = (altUrl) => {
