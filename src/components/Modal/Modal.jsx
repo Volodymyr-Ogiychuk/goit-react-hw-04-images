@@ -40,5 +40,5 @@ render() {
 Modal.propTypes = {
   onCloseModal: PropTypes.func.isRequired,
   url: PropTypes.string.isRequired,
-  alt: PropTypes.object.isRequired,
+  alt: PropTypes.string.isRequired,
 };

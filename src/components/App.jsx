@@ -5,12 +5,23 @@ import s from '../styles.module.css';
 
 export const App = () => {
   const [queryValue, setQueryValue] = useState('');
-
+  const [images, setImages] = useState([]);
+  const [page, setPage] = useState(1);
     return (
       <div className={s.App}>
         <>
-          <Searchbar onSubmit={setQueryValue} />
-          <ImageGallery dataInput={queryValue} />
+          <Searchbar
+            onSubmit={setQueryValue}
+            setImages={setImages}
+            setPage={setPage}
+          />
+          <ImageGallery
+            dataInput={queryValue}
+            setImages={setImages}
+            images={images}
+            setPage={setPage}
+            page={page}
+          />
         </>
       </div>
     );

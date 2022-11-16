@@ -1,5 +1,5 @@
 import searchApi from 'utils/searchApi';
-import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem'
+import ImageGalleryItems from '../ImageGalleryItems/ImageGalleryItems'
 import PropTypes from 'prop-types';
 import Modal from '../Modal/Modal';
 import Loader from '../Loader/Loader';
@@ -7,62 +7,52 @@ import Button from '../Button/Button';
 import { useState, useEffect } from "react";
 import s from '../../styles.module.css';
 
-export const ImageGallery = ({ dataInput }) => {
+export const ImageGallery = ({ dataInput, images, setImages, page, setPage }) => {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [images, setImages] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
-  const [page, setPage] = useState(1);
-  const [url, setUrl] = useState('');
-  const [alt, setAlt] = useState('');
+  const [altUrl, setAltUrl] = useState({
+    alt: '',
+    url: ''
+  });
   const [error, setError] = useState(null);
   
   useEffect(() => {
     if (dataInput === '') {
       return
     }
-    setImages([]);
-    setPage(1);
+ 
     setIsLoading(true);
-      searchApi(dataInput)
-        .then(r => {
-          if (r.hits.length === 0) {
-            throw new Error(
-              `No photos on request: '${dataInput}'`
-            );
-          }
-          return r;
-        })
-        .then(addImg)
+    searchApi(dataInput, page)
+      .then(r => {
+        if (r.hits.length === 0) {
+          throw new Error(
+            `No photos on request: '${dataInput}'`
+          );
+        }
+        return r;
+      })
+      .then(data => {
+        console.log('page', page);
+        console.log('dataInput', dataInput);
+        console.log('data.hits', data.hits);
+        console.log('images', images);
+        setImages(state => ((page === 1) ? data.hits : [...state, ...data.hits]));
+        console.log('images after SET', images);
+        setTotalPages(Math.ceil(data.totalHits / 12));
+        setError(null);
+        console.log('images after after', images);
+        
+      })        
         .catch(err => setError(err.message))
         .finally(() => setIsLoading(false));
     return;
-  }, [dataInput])
-
-  useEffect(() => {
-    if (page === 1) return;
-      setIsLoading(true);
-      searchApi(dataInput, page)
-        .then(data => setImages(images => [...images, ...data.hits]))
-        .catch(error => setError({ error: error.message }))
-        .finally(() => setIsLoading(false));
-// eslint-disable-next-line
-  }, [page]);
-
-
-
-  const addImg = data => {
-    setImages(data.hits);
-    setTotalPages(Math.ceil(data.totalHits / 12));
-    setError(null);
-  };
+  }, [dataInput, page])
   
-  const getUrl = (url) => {
-    setUrl(url);
+  const getAltUrl = (altUrl) => {
+    setAltUrl({alt: altUrl.tags, url: altUrl.largeImageURL});
   };
-  const getAlt = (alt) => {
-    setAlt({ alt });
-  };
+ 
   const updatePage = () => {
     setPage(page => page + 1);
   };
@@ -75,21 +65,24 @@ export const ImageGallery = ({ dataInput }) => {
         {error && <h2>{error}</h2>}
         {isLoading && <Loader />}
         <ul className={s.ImageGallery}>
-          <ImageGalleryItem
+          <ImageGalleryItems
             images={images}
             onOpenModal={toggleModal}
-            sendUrl={getUrl}
-            sendAlt={getAlt}
+            sendAltUrl={getAltUrl}
           />
         </ul>
         {images.length > 0 && totalPages > page && (
           <Button newPage={updatePage} />
         )}
-        {showModal && <Modal onCloseModal={toggleModal} url={url} alt={alt} />}
+        {showModal && <Modal onCloseModal={toggleModal} url={altUrl.url} alt={altUrl.alt} />}
       </>
     );
   }
 
 ImageGallery.propTypes = {
   dataInput: PropTypes.string.isRequired,
+  setImages: PropTypes.func.isRequired,
+  images: PropTypes.array.isRequired,
+  page: PropTypes.number.isRequired,
+  setPage: PropTypes.func.isRequired,
 };

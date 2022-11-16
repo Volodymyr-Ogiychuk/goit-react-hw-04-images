@@ -2,7 +2,7 @@ import s from '../../styles.module.css';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-export const Searchbar = ({ onSubmit }) => {
+export const Searchbar = ({ onSubmit, setImages, setPage }) => {
     const [input, setInput] = useState('');
     
     const handleInputChange = event => {
@@ -13,6 +13,8 @@ export const Searchbar = ({ onSubmit }) => {
         event.preventDefault();
         onSubmit(input);
         setInput('');
+        setImages([]);
+        setPage(1);
     };
 
     return (
@@ -37,5 +39,7 @@ export const Searchbar = ({ onSubmit }) => {
 };
 
 Searchbar.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    setImages: PropTypes.func.isRequired,
+    setPage: PropTypes.func.isRequired,
 };

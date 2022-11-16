@@ -1,15 +1,15 @@
 import s from '../../styles.module.css';
 import PropTypes from 'prop-types';
 
-const ImageGalleryItem = ({ images, onOpenModal, sendUrl, sendAlt }) => (
+const ImageGalleryItem = ({ images, onOpenModal, sendAltUrl }) => (
   <>
     {images.map(({ id, webformatURL, largeImageURL, tags }) => (
         <li
             className={s.ImageGalleryItem}
             key={id}
             onClick={evt => {
-              sendAlt(tags);
-              sendUrl(largeImageURL)
+              sendAltUrl({tags, largeImageURL});
+              // sendUrl(largeImageURL)
               onOpenModal(evt);
         }}
       >
@@ -30,7 +30,6 @@ ImageGalleryItem.propTypes = {
       webformatURL: PropTypes.string.isRequired,
     }).isRequired
   ).isRequired,
-  sendUrl: PropTypes.func.isRequired,
-  sendAlt: PropTypes.func.isRequired,
+  sendAltUrl: PropTypes.func.isRequired,
   onOpenModal: PropTypes.func.isRequired,
 };
